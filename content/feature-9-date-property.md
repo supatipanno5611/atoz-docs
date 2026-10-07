@@ -1,5 +1,7 @@
 ---
 title: 날짜 속성
+description: date 속성에 오늘 날짜 넣기
+group: 노트와 속성
 ---
 
 ## 역할

@@ -1,5 +1,7 @@
 ---
 title: 현재 행 삭제
+description: 커서가 있는 행을 한 번에 지우기
+group: 편집
 ---
 
 ## 역할

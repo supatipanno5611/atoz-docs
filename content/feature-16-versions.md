@@ -1,6 +1,7 @@
 ---
 title: 버전 관리
 description: 버전 저장, 되돌리기, 비교
+group: 노트와 속성
 ---
 
 ## 역할

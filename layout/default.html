@@ -3,27 +3,58 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>{{ title }}</title>
+	<title>{{ page_title }}</title>
 	<meta name="description" content="{{ description }}">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="style.css">
-	<script src="main.js" defer></script>
+	<meta name="color-scheme" content="light dark">
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+	<link rel="stylesheet" href="/style.css">
+	<script src="/main.js" defer></script>
 	<meta property="og:title" content="{{ title }}">
 	<meta property="og:description" content="{{ description }}">
 	<meta name="language" content="ko">
 </head>
 
 <body>
-	<main>
-		<h1>{{ title }}</h1>
-		{{ content }}
-		{{ prev_next }}
-	</main>
-	<div class="spacer"></div>
-	<footer>
-		<a href="/">홈으로</a> · <a href="https://github.com/supatipanno5611/atoz" target="_blank">GitHub</a> · <a href="https://github.com/supatipanno5611/atoz/issues" target="_blank">오류 제보</a>
-	</footer>
+	<a class="skip-link" href="#content">본문으로 건너뛰기</a>
+
+	<header class="topbar">
+		<a class="brand" href="/">atoz 문서</a>
+		<button class="menu-button" type="button" aria-controls="sidebar" aria-expanded="false">목록</button>
+	</header>
+
+	<div class="site">
+		<aside class="sidebar" id="sidebar">
+			<div class="sidebar-head">
+				<a class="brand" href="/">atoz 문서</a>
+				<label class="search" for="search-input">
+					<span class="visually-hidden">문서 검색</span>
+					<input id="search-input" type="search" placeholder="검색" autocomplete="off" spellcheck="false" aria-controls="search-results">
+					<kbd aria-hidden="true">/</kbd>
+				</label>
+			</div>
+			<div class="search-results" id="search-results" role="listbox" aria-label="검색 결과" hidden></div>
+			<nav class="sidebar-nav" aria-label="문서 목록">
+				{{ sidebar }}
+			</nav>
+			<p class="sidebar-foot">
+				<a href="https://github.com/supatipanno5611/atoz" target="_blank" rel="noopener">GitHub</a>
+				<a href="https://github.com/supatipanno5611/atoz/issues" target="_blank" rel="noopener">오류 제보</a>
+			</p>
+		</aside>
+		<div class="scrim" hidden></div>
+
+		<main class="doc" id="content">
+			<header class="doc-head">
+				{{ group }}
+				<h1>{{ title }}</h1>
+			</header>
+			{{ page_toc }}
+			<div class="doc-body">
+				{{ content }}
+				{{ prev_next }}
+			</div>
+		</main>
+	</div>
 </body>
 </html>

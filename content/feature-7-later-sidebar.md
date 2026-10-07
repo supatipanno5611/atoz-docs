@@ -1,6 +1,7 @@
 ---
 title: Later 사이드바
 description: 원본별 Later 노트와 사이드바
+group: 사이드바
 ---
 
 ## 역할

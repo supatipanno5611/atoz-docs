@@ -1,5 +1,7 @@
 ---
 title: 주제어 편집
+description: topics 속성의 링크 추가, 제거, 별칭 변경
+group: 노트와 속성
 ---
 
 ## 역할

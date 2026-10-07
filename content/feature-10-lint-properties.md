@@ -1,5 +1,7 @@
 ---
 title: 속성 정리
+description: 보관소 전체 frontmatter 검사와 정렬
+group: 노트와 속성
 ---
 
 ## 역할

@@ -1,6 +1,7 @@
 ---
 title: 작업 노트
 description: 작업 노트와 탭 정리
+group: 작업 흐름
 ---
 
 ## 역할

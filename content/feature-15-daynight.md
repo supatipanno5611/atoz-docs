@@ -1,6 +1,7 @@
 ---
 title: Daynight 사이드바
 description: Daynight 수면 기록 사이드바
+group: 사이드바
 ---
 
 ## 역할

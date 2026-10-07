@@ -106,6 +106,12 @@ function getCustomRenderer(filename, headings) {
         return `<p id="${pId}">${text}</p>\n`;
     };
 
+    // 좁은 화면에서 표가 본문 폭을 넘지 않도록 가로 스크롤 영역으로 감싼다
+    renderer.table = (header, body) => {
+        const tbody = body ? `<tbody>${body}</tbody>` : '';
+        return `<div class="table-wrap"><table>\n<thead>\n${header}</thead>\n${tbody}</table></div>\n`;
+    };
+
     return renderer;
 }
 
@@ -153,31 +159,104 @@ function parseCategoryFromFilename(filename) {
     return { category: match[1], order: parseInt(match[2], 10) };
 }
 
-function renderCategoryList(items) {
-    const listItems = items.map(item => {
-        const descHtml = item.description
-            ? `<ul><li>${item.description}</li></ul>`
-            : '';
-        return `<li><a href="/${item.slug}">${item.title}</a>${descHtml}</li>`;
-    });
-    return `<ul>\n${listItems.join('\n')}\n</ul>`;
+// 문서를 config.groups 순서로 묶는다. 그룹 안에서는 파일명 번호 순서를 따른다.
+function groupItems(items) {
+    return config.groups
+        .map(name => ({ name, items: items.filter(item => item.group === name) }))
+        .filter(group => group.items.length > 0);
 }
 
-function renderPrevNext(categoryItems, currentSlug) {
-    if (!categoryItems) return '';
+function renderCategoryList(items) {
+    const groupsHtml = groupItems(items).map(group => {
+        const listItems = group.items.map(item => {
+            const descHtml = item.description
+                ? `<span class="feature-desc">${item.description}</span>`
+                : '';
+            return `<li><a href="/${item.slug}"><span class="feature-title">${item.title}</span>${descHtml}</a></li>`;
+        });
+        return `<section class="feature-group"><h2 class="feature-group-title">${group.name}</h2><ul class="feature-list">${listItems.join('')}</ul></section>`;
+    });
+    return `<div class="feature-groups">\n${groupsHtml.join('\n')}\n</div>`;
+}
 
-    const index = categoryItems.findIndex(item => item.slug === currentSlug);
+function renderSidebarNav(items, currentSlug) {
+    const homeCurrent = currentSlug === 'index' ? ' aria-current="page"' : '';
+    const groupsHtml = groupItems(items).map(group => {
+        const links = group.items.map(item => {
+            const current = item.slug === currentSlug ? ' aria-current="page"' : '';
+            return `<li><a href="/${item.slug}"${current}>${item.title}</a></li>`;
+        });
+        return `<div class="nav-group"><p class="nav-group-title">${group.name}</p><ul>${links.join('')}</ul></div>`;
+    });
+    return `<ul class="nav-home"><li><a href="/"${homeCurrent}>시작하기</a></li></ul>\n${groupsHtml.join('\n')}`;
+}
+
+function renderPrevNext(orderedItems, currentSlug) {
+    if (!orderedItems) return '';
+
+    const index = orderedItems.findIndex(item => item.slug === currentSlug);
     if (index === -1) return '';
 
-    const prev = index > 0 ? categoryItems[index - 1] : null;
-    const next = index < categoryItems.length - 1 ? categoryItems[index + 1] : null;
+    const prev = index > 0 ? orderedItems[index - 1] : null;
+    const next = index < orderedItems.length - 1 ? orderedItems[index + 1] : null;
 
     if (!prev && !next) return '';
 
-    const prevHtml = prev ? `<a href="/${prev.slug}">← ${prev.title}</a>` : '<span></span>';
-    const nextHtml = next ? `<a href="/${next.slug}">${next.title} →</a>` : '<span></span>';
+    const prevHtml = prev
+        ? `<a class="prev" href="/${prev.slug}"><span class="prev-next-label">이전</span><span class="prev-next-title">${prev.title}</span></a>`
+        : '<span></span>';
+    const nextHtml = next
+        ? `<a class="next" href="/${next.slug}"><span class="prev-next-label">다음</span><span class="prev-next-title">${next.title}</span></a>`
+        : '<span></span>';
 
-    return `<nav class="prev-next">${prevHtml}${nextHtml}</nav>`;
+    return `<nav class="prev-next" aria-label="이전 문서와 다음 문서">${prevHtml}${nextHtml}</nav>`;
+}
+
+// 오른쪽 '이 페이지' 목차. 헤딩이 없는 문서에는 만들지 않는다.
+function renderPageToc(headings) {
+    if (headings.length === 0) return '';
+    const links = headings.map(h =>
+        `<li class="toc-l${h.level}"><a href="#${h.id}">${h.text}</a></li>`
+    );
+    return `<details class="page-toc" open><summary>이 페이지</summary><ul>${links.join('')}</ul></details>`;
+}
+
+function stripHtml(html) {
+    return html
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+// 검색 인덱스용으로 마크다운을 헤딩 단위 구역으로 나눈다.
+// 코드 블록 안의 # 줄은 헤딩으로 보지 않는다. 구역 i는 렌더러가 모은 headings[i]와 짝이 된다.
+function splitSections(content) {
+    const sections = [{ lines: [] }];
+    let inFence = false;
+    content.split(/\r?\n/).forEach(line => {
+        if (/^\s*```/.test(line)) inFence = !inFence;
+        if (!inFence && /^#{2,4}\s/.test(line)) {
+            sections.push({ lines: [] });
+            return;
+        }
+        sections[sections.length - 1].lines.push(line);
+    });
+    return sections.map(section => stripMarkdown(section.lines.join('\n')));
+}
+
+function stripMarkdown(markdown) {
+    return markdown
+        .replace(/^yt="[^"]*"$/gm, '')
+        .replace(/^section="[^"]*"$/gm, '')
+        .replace(/\{\{\s*toc\s*\}\}/g, '')
+        .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+        .replace(/^\s*```.*$/gm, '')
+        .replace(/^\s*\|?\s*-{3,}.*$/gm, '')
+        .replace(/[`*>#|]/g, ' ')
+        .replace(/^\s*(?:[-+]|\d+\.)\s+/gm, '')
+        .replace(/\s+/g, ' ')
+        .trim();
 }
 
 function buildToc(headings) {
@@ -258,6 +337,9 @@ async function processMarkdownFiles(staticFileMap) {
         // config.json의 예외 파일 목록에 없는 경우에만 파일명 규칙 검사 수행
         if (!config.exceptionFiles.includes(file)) {
             const parsed = parseCategoryFromFilename(file);
+            if (!config.groups.includes(data.group)) {
+                throw new Error(`[${file}] frontmatter의 group "${data.group ?? ''}"이 config.json의 groups에 없습니다.`);
+            }
 
             if (!categories[parsed.category]) categories[parsed.category] = [];
             categories[parsed.category].push({
@@ -265,6 +347,7 @@ async function processMarkdownFiles(staticFileMap) {
                 slug,
                 title: data.title || '제목 없음',
                 description: data.description || '',
+                group: data.group,
             });
         }
 
@@ -275,13 +358,10 @@ async function processMarkdownFiles(staticFileMap) {
     // 카테고리 내 문서들을 order 기준으로 정렬
     Object.values(categories).forEach(list => list.sort((a, b) => a.order - b.order));
 
-    // slug -> 소속 카테고리 목록 매핑 (prev/next 조회용)
-    const slugToCategoryItems = {};
-    Object.values(categories).forEach(list => {
-        list.forEach(item => {
-            slugToCategoryItems[item.slug] = list;
-        });
-    });
+    // 사이드바와 이전/다음 링크는 그룹 순서로 펼친 목록을 함께 쓴다
+    const orderedItems = groupItems(Object.values(categories).flat()).flatMap(group => group.items);
+    const slugToItem = Object.fromEntries(orderedItems.map(item => [item.slug, item]));
+    const searchIndex = [];
 
     // 2단계: 수집된 메모리 데이터를 바탕으로 HTML 변환 및 파일 저장 병렬 처리
     await Promise.all(filesData.map(async ({ file, slug, data, content }) => {
@@ -318,10 +398,35 @@ async function processMarkdownFiles(staticFileMap) {
                 htmlContent = replaced;
         }
 
-        const prevNextHtml = renderPrevNext(slugToCategoryItems[slug], slug);
+        const prevNextHtml = renderPrevNext(orderedItems, slug);
+        const item = slugToItem[slug];
+        const groupHtml = item ? `<p class="doc-group">${item.group}</p>` : '';
+        const pageTitle = slug === 'index' ? (data.title || '제목 없음') : `${data.title || '제목 없음'} - atoz 문서`;
+
+        const sectionTexts = splitSections(content);
+        if (sectionTexts.length === headings.length + 1) {
+            sectionTexts.forEach((text, i) => {
+                const heading = i > 0 ? headings[i - 1] : null;
+                if (!text && !heading) return;
+                searchIndex.push({
+                    url: (slug === 'index' ? '/' : `/${slug}`) + (heading ? `#${heading.id}` : ''),
+                    page: data.title || '제목 없음',
+                    heading: heading ? stripHtml(heading.text) : '',
+                    description: i === 0 ? (data.description || '') : '',
+                    text,
+                });
+            });
+        } else {
+            console.warn(`⚠️ [${file}] 헤딩 구역을 나누지 못해 문서 전체를 한 항목으로 색인합니다.`);
+            searchIndex.push({ url: `/${slug}`, page: data.title || '제목 없음', heading: '', description: data.description || '', text: stripMarkdown(content) });
+        }
 
         let finalHtml = layoutWithStaticRefs
+                .replace(/\{\{\s*page_title\s*\}\}/g, pageTitle)
                 .replace(/\{\{\s*title\s*\}\}/g, data.title || '제목 없음')
+                .replace(/\{\{\s*group\s*\}\}/g, groupHtml)
+                .replace(/\{\{\s*sidebar\s*\}\}/g, renderSidebarNav(orderedItems, slug))
+                .replace(/\{\{\s*page_toc\s*\}\}/g, renderPageToc(headings))
                 .replace(/\{\{\s*description\s*\}\}/g, data.description || '')
                 .replace(/\{\{\s*content\s*\}\}/g, htmlContent)
                 .replace(/\{\{\s*prev_next\s*\}\}/g, prevNextHtml);
@@ -337,6 +442,9 @@ async function processMarkdownFiles(staticFileMap) {
     }));
 
     await generateSitemap(filesData);
+
+    await fs.writeFile(path.join(PATHS.PUBLIC, 'search-index.json'), JSON.stringify(searchIndex));
+    console.log('✅ 검색 인덱스 생성 완료: search-index.json');
 }
 
 // ---------------------------------------------------------

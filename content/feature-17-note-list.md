@@ -1,6 +1,7 @@
 ---
 title: 노트 목록
 description: 노트 목록 자동 생성
+group: 노트와 속성
 ---
 
 ## 역할
