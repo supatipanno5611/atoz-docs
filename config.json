@@ -1,0 +1,14 @@
+{
+  "paths": {
+    "content": "content",
+    "layout": "layout",
+    "static": "static",
+    "public": "public"
+  },
+  "exceptionFiles": [
+    "index.md",
+    "README.md"
+  ],
+  "independentHtml": [
+  ]
+}

@@ -1,0 +1,223 @@
+/* ==========================================
+   0) Root + Reset
+   ========================================== */
+html {
+  font-size: clamp(87.5%, 85% + 0.5vw, 100%);
+  -webkit-text-size-adjust: 100%;
+}
+
+:root {
+  --font-sans: "Noto Sans KR";
+
+  --color-bg: #f9f9fb;             /* 미세하게 푸른빛이 도는 화이트 */
+  --color-text: #111111;           /* 선명한 블랙 */
+  --color-heading-hover: #2b4c7e;  /* 이성적인 느낌의 딥 네이비 */
+  --color-h3: #444444;             
+  --color-h4: #666666;             
+  --color-link: #2b4c7e;           /* 메인 포인트: 딥 네이비 */
+  --color-link-hover: #1a3052;     /* 마우스 올렸을 때 짙어지는 네이비 */
+  --color-flash: #dce6f5;          /* 복사 시 배경 하이라이트 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #16161a;           /* 푸른빛이 감도는 세련된 다크 */
+    --color-text: #f4f4f6;         
+    --color-heading-hover: #6085c2;  /* 밝은 스카이 블루 */
+    --color-h3: #cdd1d8;           
+    --color-h4: #9aa0a6;           
+    --color-link: #6085c2;           /* 메인 포인트: 스카이 블루 */
+    --color-link-hover: #82a3de;     /* 마우스 올렸을 때 더 밝아지는 블루 */
+    --color-flash: #33445c;          /* 복사 시 배경 하이라이트 (다크) */
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  font-family: var(--font-sans);
+  font-kerning: normal;
+  font-weight: 400;
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
+  text-rendering: optimizeLegibility;
+  hyphens: auto;
+  text-align: justify;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+main {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+}
+
+.spacer {
+  height: 50vh;
+  background: transparent;
+}
+
+/* ==========================================
+   1) Headings & basic text
+   ========================================== */
+
+h1, h2, h3, h4 {
+	margin: 2rem 0 1rem;
+	line-height: 1.25;
+	font-family: var(--font-serif);
+	font-weight: 700;
+	color: var(--color-text);
+}
+
+h2, h3, h4 {
+  border-bottom: 2px solid;
+  display: inline-block;
+}
+
+h1 { 
+  font-size: 1.5rem;   /* 24px */ 
+}
+h2 { 
+  font-size: 1.25rem;  /* 20px */ 
+}
+h3 { 
+  font-size: 1.125rem; /* 18px */ 
+  color: var(--color-h3);
+}
+h4 { 
+  font-size: 1.125rem;     /* 18px */
+  color: var(--color-h4);
+}
+
+h1 a, h2 a, h3 a, h4 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover {
+  color: var(--color-heading-hover);
+}
+
+p { font-size: 1rem; margin: 0 0 1rem; }
+
+strong, b { font-weight: 700; }
+
+em, i { font-style: italic; }
+
+hr {
+  border: 0;
+  border-top: 1px solid;
+  margin: 2rem 0;
+}
+
+footer {
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+
+/* ==========================================
+   2) Links, lists
+   ========================================== */
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+a:hover { color: var(--color-link-hover); }
+
+a:focus, a:hover { outline: none; }
+
+ul, ol {
+  margin: 0 0 1rem 1.5rem;
+  padding: 0;
+}
+
+li { margin: 0.25rem 0; }
+
+/* ==========================================
+   3) Images
+   ========================================== */
+
+img, svg, video {
+  max-width: 100%;
+  height: auto;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 1rem;
+}
+
+.video-container iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ==========================================
+   4) Widows/orphans, print
+   ========================================== */
+
+p, ul, ol {
+  widows: 2;
+  orphans: 2;
+}
+
+/* ==========================================
+   5) Web-only niceties
+   ========================================== */
+
+@media screen {
+  html { scroll-behavior: smooth; }
+
+  h1, h2, h3, h4, h5, h6 {
+    scroll-margin-top: 20px;
+  }
+}
+
+/* ==========================================
+   6) Copy-link flash feedback
+   ========================================== */
+
+.copied-flash {
+  animation: flash-highlight 1s ease-out;
+}
+
+@keyframes flash-highlight {
+  0% { background-color: transparent; }
+  25% { background-color: var(--color-flash); }
+  100% { background-color: transparent; }
+}
+
+/* ==========================================
+   7) Prev/next navigation
+   ========================================== */
+ 
+.prev-next {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid;
+}
+ 
+.prev-next a {
+  font-size: 0.9rem;
+}
+ 

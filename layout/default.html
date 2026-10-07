@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{ title }}</title>
+	<meta name="description" content="{{ description }}">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="style.css">
+	<script src="main.js" defer></script>
+	<meta property="og:title" content="{{ title }}">
+	<meta property="og:description" content="{{ description }}">
+	<meta name="language" content="ko">
+</head>
+
+<body>
+	<main>
+		<h1>{{ title }}</h1>
+		{{ content }}
+		{{ prev_next }}
+	</main>
+	<div class="spacer"></div>
+	<footer>
+		<a href="/">홈으로</a> · <a href="https://github.com/supatipanno5611/atoz" target="_blank">GitHub</a> · <a href="https://github.com/supatipanno5611/atoz/issues" target="_blank">오류 제보</a>
+	</footer>
+</body>
+</html>
