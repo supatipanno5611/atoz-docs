@@ -8,6 +8,7 @@ html {
 
 :root {
   --font-sans: "Noto Sans KR";
+  --font-mono: "D2Coding", monospace;
 
   --color-bg: #f9f9fb;             /* 미세하게 푸른빛이 도는 화이트 */
   --color-text: #111111;           /* 선명한 블랙 */
@@ -113,6 +114,18 @@ p { font-size: 1rem; margin: 0 0 1rem; }
 strong, b { font-weight: 700; }
 
 em, i { font-style: italic; }
+
+@font-face {
+  font-family: "D2Coding";
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/gh/joungkyun/font-d2coding@v1.3.2/D2Coding.woff2") format("woff2");
+}
+
+code, pre { font-family: var(--font-mono); }
+
+/* 양쪽 정렬이 인라인 코드 안의 공백까지 늘리지 않도록 별도 박스로 둔다 */
+p code, li code { display: inline-block; max-width: 100%; }
 
 hr {
   border: 0;
