@@ -230,6 +230,7 @@ a { color: var(--color-link); }
 
 .sidebar-foot {
   display: flex;
+  align-items: center;
   gap: 1rem;
   margin: auto 0 0;
   padding: 1rem 1.5rem 1.25rem;
@@ -242,6 +243,8 @@ a { color: var(--color-link); }
 }
 
 .sidebar-foot a:hover { color: var(--color-text); }
+
+.sidebar-foot .icon-link { display: inline-flex; }
 
 /* ---------- Search results ---------- */
 .search-results { padding: 0.25rem 0.5rem 1.5rem; }
