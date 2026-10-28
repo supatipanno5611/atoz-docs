@@ -19,7 +19,7 @@ group: 노트와 속성
 ## 허용 속성
 
 - `date`, `topics`, `title`, `description`
-- `cssclasses`, `aliases`, `tags`, `later`, `version`, `notelist`
+- `cssclasses`, `aliases`, `tags`, `version`, `notelist`
 - `target-characters`, `target-tolerance`, `min-characters`, `max-characters`
 
 ## 제외 파일
