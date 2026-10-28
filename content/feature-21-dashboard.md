@@ -10,12 +10,12 @@ group: 모바일과 기타
 
 ## 여는 방법
 
-- 리본의 대시보드(`layout-dashboard`) 아이콘이나 `대시보드 열기` 명령으로 홈을 엽니다.
+- 리본의 대시보드(`layout-dashboard`) 아이콘이나 `대시보드: 홈 열기` 명령으로 홈을 엽니다.
 - 기능별 명령은 그대로 두고, 해당 페이지로 바로 엽니다.
-  - `Daynight: 대시보드 열기`: Daynight 페이지
-  - `Budget: 대시보드 열기`: Budget 페이지
-  - `Meal: 식사보드 열기`: Meal 페이지
-  - `Timeline: 타임라인 열기`: Timeline 페이지
+  - `대시보드: Daynight 열기`: Daynight 페이지
+  - `대시보드: Budget 열기`: Budget 페이지
+  - `대시보드: Meal 열기`: Meal 페이지
+  - `대시보드: Timeline 열기`: Timeline 페이지
 - 메인 영역에 새 탭으로 열고, 이미 열려 있으면 그 탭에서 페이지를 바꿉니다.
 - 예전에 따로 열리던 Daynight 대시보드와 Budget 대시보드 탭이 남아 있으면 열 때 닫습니다.
 
